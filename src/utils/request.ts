@@ -16,18 +16,18 @@ type Stub<T> = {
 };
 
 export const request = <T>(method: Methods, opts: AxiosRequestConfig) => {
-  if (RUNTIME_ENV === 'client' && process.env.APP_ENV === 'development') {
+  if (RUNTIME_ENV === 'server') {
     return axios.request<T>({
       ...opts,
+      baseURL: `${config.remoteApiUrl}/api`,
       method,
-      baseURL: '/api',
     });
   }
 
   return axios.request<T>({
     ...opts,
-    baseURL: `${config.remoteApiUrl}/api`,
     method,
+    baseURL: '/api',
   });
 };
 

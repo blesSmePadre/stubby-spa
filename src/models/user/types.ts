@@ -15,6 +15,10 @@ export interface SignInPayload {
   password: string;
 }
 
+export interface GoogleAuthPayload {
+  token: string;
+}
+
 export interface VerifyPayload {
   email: string;
   confirmationCode: string;

@@ -53,6 +53,9 @@ const usersSlice = createSlice({
       state.signingUp = false;
       state.signUpError = payload;
     });
+    builder.addCase(thunks.googleAuth.fulfilled, (state, { payload }) => {
+      state.current = payload.data;
+    });
     builder.addCase(thunks.getCurrentUser.fulfilled, (state, { payload }) => {
       state.current = payload;
     });

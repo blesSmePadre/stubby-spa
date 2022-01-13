@@ -8,12 +8,38 @@ import {
   sliceName,
   SignUpPayload,
   SignInPayload,
+  GoogleAuthPayload,
   VerifyPayload,
   UserState,
   User,
 } from './types';
 
 import * as api from './api';
+
+export const googleAuth = createAsyncThunk<
+  { data: User; nextRoute: string },
+  GoogleAuthPayload,
+  { rejectValue: string }
+>(
+  `${sliceName}/googleAuth`,
+  async (payload: GoogleAuthPayload, { rejectWithValue }) => {
+    try {
+      const response = await api.googleAuth(payload);
+      return { data: response.data, nextRoute: Routes.home };
+    } catch (err) {
+      if (
+        axios.isAxiosError(err) &&
+        err.response &&
+        err.response.status === 400
+      ) {
+        return rejectWithValue('Invalid credentials');
+      }
+
+      console.error('error', err);
+      return rejectWithValue('');
+    }
+  }
+);
 
 export const signUp = createAsyncThunk<
   { nextRoute: string },

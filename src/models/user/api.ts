@@ -1,6 +1,12 @@
 import { request, Methods } from 'utils/request';
 
-import { User, SignUpPayload, SignInPayload, VerifyPayload } from './types';
+import {
+  User,
+  SignUpPayload,
+  SignInPayload,
+  VerifyPayload,
+  GoogleAuthPayload,
+} from './types';
 
 export const signUp = (payload: SignUpPayload) =>
   request(Methods.POST, {
@@ -11,6 +17,12 @@ export const signUp = (payload: SignUpPayload) =>
 export const signIn = (payload: SignInPayload) =>
   request<User>(Methods.POST, {
     url: '/auth/signin',
+    data: payload,
+  });
+
+export const googleAuth = (payload: GoogleAuthPayload) =>
+  request<User>(Methods.POST, {
+    url: '/auth/oauth',
     data: payload,
   });
 

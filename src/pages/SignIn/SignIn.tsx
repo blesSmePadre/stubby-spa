@@ -1,9 +1,16 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import { Formik } from 'formik';
+import {
+  GoogleLogin,
+  GoogleLoginResponse,
+  GoogleLoginResponseOffline,
+} from 'react-google-login';
 
 import { Routes, FontWeights } from '@types';
-import { SignInPayload } from 'models/user/types';
+import { SignInPayload, GoogleAuthPayload } from 'models/user/types';
 import { signInErrorSelector } from 'models/user/selectors';
+
+import config from '@config';
 
 import Button from 'components/Button';
 import AuthField from 'components/Forms/AuthField';
@@ -16,10 +23,20 @@ import * as S from './SignIn.styled';
 
 type Props = {
   onSignIn: (payload: SignInPayload) => void;
+  onGoogleAuth: (payload: GoogleAuthPayload) => void;
   signInError: ReturnType<typeof signInErrorSelector>;
 };
 
-const SignIn = ({ onSignIn, signInError }: Props) => {
+const SignIn = ({ onSignIn, onGoogleAuth, signInError }: Props) => {
+  const handleGoogleAuthSuccess = useCallback(
+    (response: GoogleLoginResponse | GoogleLoginResponseOffline) => {
+      if ('accessToken' in response) {
+        onGoogleAuth({ token: response.accessToken });
+      }
+    },
+    [onGoogleAuth]
+  );
+
   return (
     <S.Root>
       <Formik onSubmit={onSignIn} initialValues={{ email: '', password: '' }}>
@@ -53,6 +70,24 @@ const SignIn = ({ onSignIn, signInError }: Props) => {
             <S.SignUpLink to={Routes.signUp}>
               or sign up for stubbyAPI
             </S.SignUpLink>
+            <S.Sep>
+              <Text fontSize={14} color="doveGray">
+                OR
+              </Text>
+            </S.Sep>
+            <GoogleLogin
+              clientId={config.google.clientId}
+              buttonText="Login"
+              render={(props) => (
+                <S.GoogleButton {...props}>
+                  <S.GoogleIcon />
+                  Continue with Google
+                </S.GoogleButton>
+              )}
+              onSuccess={handleGoogleAuthSuccess}
+              onFailure={(err) => console.info('google err', err)}
+              cookiePolicy="single_host_origin"
+            />
           </S.Form>
         )}
       </Formik>

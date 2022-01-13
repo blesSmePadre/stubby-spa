@@ -40,5 +40,9 @@ export default {
       },
     ],
   },
+  google: {
+    clientId:
+      '576472057386-nfo6fa5hmemhtvnuqb9hpqmfan9ecd8q.apps.googleusercontent.com',
+  },
   ...configs[process.env.APP_ENV || 'development'],
 };
